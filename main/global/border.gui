@@ -1,0 +1,51 @@
+fonts {
+  name: "ui"
+  font: "/objects/fonts/ui.font"
+}
+textures {
+  name: "main"
+  texture: "/main/global/materials/main.atlas"
+}
+nodes {
+  position {
+    y: 1136.0
+  }
+  size {
+    x: 640.0
+    y: 120.0
+  }
+  type: TYPE_BOX
+  texture: "main/feet"
+  id: "box"
+  yanchor: YANCHOR_TOP
+  pivot: PIVOT_NW
+  layer: "border"
+  inherit_alpha: true
+  material: "foreground"
+}
+nodes {
+  position {
+    x: 320.0
+    y: -60.0
+  }
+  size {
+    x: 640.0
+    y: 120.0
+  }
+  type: TYPE_TEXT
+  text: "Minesweeper Online"
+  font: "ui"
+  id: "text"
+  parent: "box"
+  layer: "border"
+  inherit_alpha: true
+}
+layers {
+  name: "border"
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT
+materials {
+  name: "foreground"
+  material: "/main/global/materials/foreground.material"
+}

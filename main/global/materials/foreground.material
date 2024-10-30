@@ -1,0 +1,20 @@
+name: "particle"
+tags: "particle"
+vertex_program: "/objects/materials/a.vp"
+fragment_program: "/objects/materials/a.fp"
+vertex_constants {
+  name: "view_proj"
+  type: CONSTANT_TYPE_VIEWPROJ
+  value {
+  }
+}
+fragment_constants {
+  name: "tint"
+  type: CONSTANT_TYPE_USER
+  value {
+    x: 0.01
+    y: 0.6
+    z: 0.54
+    w: 1.0
+  }
+}

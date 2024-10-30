@@ -1,0 +1,10 @@
+images {
+  image: "/assets/app_icons/192x192.png"
+}
+images {
+  image: "/assets/feet.png"
+}
+images {
+  image: "/assets/feet2.png"
+}
+extrude_borders: 2

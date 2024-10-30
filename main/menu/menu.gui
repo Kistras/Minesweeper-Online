@@ -1,0 +1,60 @@
+script: "/main/menu/main.gui_script"
+textures {
+  name: "main"
+  texture: "/main/global/materials/main.atlas"
+}
+nodes {
+  type: TYPE_TEMPLATE
+  id: "background"
+  inherit_alpha: true
+  template: "/main/global/bg.gui"
+}
+nodes {
+  type: TYPE_BOX
+  id: "background/bg-image"
+  parent: "background"
+  template_node_child: true
+}
+nodes {
+  position {
+    z: 10.0
+  }
+  type: TYPE_TEMPLATE
+  id: "ui"
+  layer: "border"
+  inherit_alpha: true
+  template: "/main/global/border.gui"
+}
+nodes {
+  type: TYPE_BOX
+  id: "ui/box"
+  parent: "ui"
+  template_node_child: true
+}
+nodes {
+  type: TYPE_TEXT
+  id: "ui/text"
+  parent: "ui/box"
+  template_node_child: true
+}
+nodes {
+  position {
+    x: 320.0
+    y: 828.0
+    z: 10.0
+  }
+  type: TYPE_BOX
+  texture: "main/192x192"
+  id: "logo"
+  layer: "border"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+layers {
+  name: "border"
+}
+layers {
+  name: "background"
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

@@ -1,0 +1,21 @@
+textures {
+  name: "main"
+  texture: "/main/global/materials/main.atlas"
+}
+nodes {
+  size {
+    x: 640.0
+    y: 1136.0
+  }
+  type: TYPE_BOX
+  texture: "main/feet2"
+  id: "bg-image"
+  pivot: PIVOT_SW
+  layer: "background"
+  inherit_alpha: true
+}
+layers {
+  name: "background"
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT
