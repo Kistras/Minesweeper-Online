@@ -31,7 +31,7 @@ embedded_components {
   "}\n"
   "textures {\n"
   "  sampler: \"texture_sampler\"\n"
-  "  texture: \"/objects/textures/main.atlas\"\n"
+  "  texture: \"/objects/textures/horses.atlas\"\n"
   "}\n"
   ""
   scale {

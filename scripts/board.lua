@@ -73,8 +73,11 @@ local function update_tiles(board, tiles)
 	end
 end
 
-function click_board(board, nx, ny)
-	if board[nx][ny]["open"] then return end
+function click_board(board, nx, ny, combo)
+	local score = 0
+	local combo_broken = false
+	if not board[nx] or not board[nx][ny] then return {score=0, combo_broken=false} end
+	if board[nx][ny]["open"] then return {score=0, combo_broken=false} end
 
 	local tiles = {}
 	tiles[nx] = {}
@@ -88,6 +91,12 @@ function click_board(board, nx, ny)
 
 			if not board[x][y]["open"] then
 				board[x][y]["open"] = true
+				if board[x][y]["type"] == E_CLEAR then
+					score = score + 2^combo
+				elseif board[x][y]["type"] == E_MINE then
+					score = score - math.max(1, 2^(combo-1))
+					combo_broken = true
+				end
 				--print(x,y)
 
 				if board[x][y]["display"] == 10 then -- Unlocked tile
@@ -109,4 +118,5 @@ function click_board(board, nx, ny)
 		tiles_to_update = new_tiles_to_update
 	end
 	update_tiles(board, tiles)
+	return {score=score, combo_broken=combo_broken or score == 0}
 end

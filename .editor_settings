@@ -25,7 +25,14 @@
   }
   :code {
     :find {
-      :term "os.clock"
+      :term "use_world_position"
+    }
+  }
+  :run {
+    :instance-count 1
+    :simulated-resolution {
+      :height 847
+      :width 412
     }
   }
   :workflow {
@@ -39,31 +46,11 @@
         :cljfx-form-view
       ]
       [
-        "/screens/menu/menu.script"
-        :code
-      ]
-      [
-        "/screens/game/game.gui_script"
-        :code
-      ]
-      [
-        "/screens/menu/menu.gui"
+        "/objects/textures/game.atlas"
         :scene
       ]
       [
-        "/screens/menu/menu.gui_script"
-        :code
-      ]
-      [
-        "/scripts/board.lua"
-        :code
-      ]
-      [
-        "/liveupdate.settings"
-        :cljfx-form-view
-      ]
-      [
-        "/objects/textures/main.atlas"
+        "/objects/textures/horses.atlas"
         :scene
       ]
       [
@@ -71,27 +58,7 @@
         :scene
       ]
       [
-        "/hyper_trails/trail_maker.lua"
-        :code
-      ]
-      [
-        "/game.project"
-        :cljfx-form-view
-      ]
-      [
-        "/objects/factory/grenade/grenade.script"
-        :code
-      ]
-      [
-        "/hyper_trails/trail_maker.script"
-        :code
-      ]
-      [
         "/screens/game/game.gui"
-        :scene
-      ]
-      [
-        "/screens/menu/menu.collection"
         :scene
       ]
       [
@@ -99,12 +66,104 @@
         :scene
       ]
       [
-        "/screens/game/game.collection"
+        "/liveupdate.settings"
+        :cljfx-form-view
+      ]
+      [
+        "/screens/game/game.gui_script"
+        :code
+      ]
+      [
+        "/scripts/board.lua"
+        :code
+      ]
+      [
+        "/objects/fonts/ui.font"
+        :scene
+      ]
+      [
+        "/objects/fonts/ui_smol.font"
+        :scene
+      ]
+      [
+        "/objects/fonts/ui_so_smol.font"
+        :scene
+      ]
+      [
+        "/screens/global/border.gui"
+        :scene
+      ]
+      [
+        "/screens/menu/menu.gui"
+        :scene
+      ]
+      [
+        "/scripts/general.lua"
+        :code
+      ]
+      [
+        "/scripts/trajectory.lua"
+        :code
+      ]
+      [
+        "/objects/textures/main.atlas"
+        :scene
+      ]
+      [
+        "/objects/factory/trajectory/trajectory.factory"
+        :cljfx-form-view
+      ]
+      [
+        "/objects/factory/grenade/grenade.script"
+        :code
+      ]
+      [
+        "/objects/factory/horse/horse.go"
+        :scene
+      ]
+      [
+        "/screens/menu/menu.collection"
+        :scene
+      ]
+      [
+        "/objects/factory/trajectory/trajectory.collection"
         :scene
       ]
       [
         "/screens/game/game.script"
         :code
+      ]
+      [
+        "/hyper_trails/trail_maker.lua"
+        :code
+      ]
+      [
+        "/hyper_trails/trail_maker.script"
+        :code
+      ]
+      [
+        "/objects/factory/trajectory/trajectory.go"
+        :scene
+      ]
+      [
+        "/screens/menu/menu.script"
+        :code
+      ]
+      [
+        "/screens/menu/menu.gui_script"
+        :code
+      ]
+      [
+        "/scripts/trajectory.script"
+        :code
+      ]
+      [
+        "/game.project"
+        :cljfx-form-view
+      ]
+      [
+        "/screens/game/game.collection"
+        :scene
       ]
     ]
   }

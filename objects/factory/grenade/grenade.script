@@ -1,12 +1,6 @@
+require "scripts/general"
 local grenades = {}
 local MIDDLE_THROW_ADDITIONAL_LERP_OFFSET = 200
-
-local function lerp3(t, v1, v2, v3) 
-	local a = vmath.lerp(t,v1,v2)
-	local b = vmath.lerp(t,v2,v3)
-	local c = vmath.lerp(t, a, b)
-	return c
-end
 
 local function dkill(self, handle, dt)
 	go.delete()
@@ -29,10 +23,11 @@ function update(self, dt)
 	end
 end
 
+local INIT = hash("init")
 function on_message(self, message_id, message, sender)
 	-- {"sprite":"normiz","controlled":false,"id":1,"name":"TestHorse"}
 	-- print(json.encode({message_id, message, sender}))
-	if message_id == hash("init") then
+	if message_id == INIT then
 		message["start"] = socket.gettime()
 
 		-- Generate middle point to implement parabalistic trajectory

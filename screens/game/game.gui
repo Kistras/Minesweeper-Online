@@ -3,10 +3,6 @@ fonts {
   name: "ui"
   font: "/objects/fonts/ui.font"
 }
-textures {
-  name: "main"
-  texture: "/objects/textures/main.atlas"
-}
 nodes {
   position {
     x: 320.0

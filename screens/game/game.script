@@ -6,7 +6,10 @@ local MINE_COUNT = 20 -- ~14%
 local HORSE_LOOP_DURATION = 5
 local HORSE_POWER = 400
 local HORSE_THROW_SPEED = 2
+local EXPLOSION = {{0, 0}, {0, 1}, {1, 0}, {0, -1}, {-1, 0},}
 
+local player_score = 0
+local player_combo = 0
 local horses = {
 	{
 		name = "TestHorse",
@@ -179,9 +182,40 @@ function on_message(self, message_id, message, sender)
 			end
 		end
 	elseif message_id == BOOM then
-		print(sender)
-		-- TODO: boom
+		-- TODO: boom effect
+		local pos = go.get_position("/tilemap#tilemap")
+		local scale = go.get_scale("/tilemap")
+		local size = 64*12*scale.x
 
+		local dx = message["pos"].x - pos.x
+		local dy = message["pos"].y - pos.y
+		local combo_broken = false
+		local score = 0
+		if dx > 0 and dx < size and dy > 0 and dy < size then
+			local tilex = math.floor(dx/64/scale.x)+1
+			local tiley = math.floor(dy/64/scale.x)+1
+
+			for k, v in pairs(EXPLOSION) do
+				local cb = click_board(board, tilex+v[1], tiley+v[2], player_combo)
+				score = score + cb["score"]
+				if cb["combo_broken"] then
+					combo_broken = true
+				end
+			end
+			-- TODO: make a plink effect with numbers or smth
+			player_score = player_score + score
+			label.set_text("/game#score", "Score: " .. player_score)
+		else 
+			combo_broken = true
+		end
+		if combo_broken == true or score == 0 then
+			player_combo = math.max(0, player_combo - 1)
+		else 
+			player_combo = player_combo + 1
+		end
+		player_score = player_score + score
+
+		-- Remove trails
 		for k, v in pairs(grenades) do
 			local id = message["id"]
 			if v["id"] == id then
@@ -192,30 +226,4 @@ function on_message(self, message_id, message, sender)
 			end
 		end
 	end
-end
-
-local TOUCH = hash("touch")
-function on_input(self, action_id, action)
-	-- {"pressed":false,"y":342.5,"screen_y":342,"dx":0,"value":0,"released":true,"repeated":false,"screen_dx":0,"screen_dy":0,"screen_x":332,"dy":0,"x":332.5}
-	if action_id == TOUCH and action.pressed then
-		-- If tilemap is pressed. Temp
-		local pos = go.get_position("/tilemap#tilemap")
-		local scale = go.get_scale("/tilemap")
-		local size = 64*12*scale.x
-
-		local dx = action.x - pos.x
-		local dy = action.y - pos.y
-		if dx > 0 and dx < size and dy > 0 and dy < size then
-			local tilex = math.floor(dx/64/scale.x)+1
-			local tiley = math.floor(dy/64/scale.x)+1
-
-			click_board(board, tilex, tiley)
-		end
-	end
-end
-
-function on_reload(self)
-	-- Add reload-handling code here
-	-- Learn more: https://defold.com/manuals/hot-reload/
-	-- Remove this function if not needed
 end

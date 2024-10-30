@@ -1,0 +1,30 @@
+require "scripts/general"
+
+go.property("dot_count", 10)
+
+local function spawn_dot(self, pos)
+	return factory.create("#factory", pos, nil, {}, dotScale)
+end
+
+local function update_dots(self)
+	for i, dot in ipairs(self.dots) do
+		local t = i*step -- time to project into the future, for this dot
+		local pos = vmath.vector3(self.pos)
+		pos.x = pos.x + self.initialV.x*t -- x velocity is not affected by gravity
+		pos.y = pos.y + self.initialV.y*t + 0.5*G*t*t -- y = initalV*t + 1/2 G*t-squared
+		go.set_position(pos, dot)
+	end
+end
+
+function init(self)
+	print(self.dot_count)
+-- 	self.dt = 1/60
+-- 	self.dots = {}
+-- 	self.pos = go.get_position()
+-- 	self.initialV = vmath.vector3(400, 400, 0)
+-- 
+-- 	for i=1, iterations do
+-- 		table.insert(self.dots, spawn_dot(self))
+-- 	end
+-- 	update_dots(self)
+end

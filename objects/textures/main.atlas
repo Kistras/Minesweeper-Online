@@ -1,16 +1,10 @@
 images {
-  image: "/assets/app_icons/192x192.png"
-}
-images {
-  image: "/assets/horse.png"
+  image: "/assets/feet2.png"
 }
 images {
   image: "/assets/horz.jpg"
 }
 images {
-  image: "/assets/grenade.png"
-}
-images {
-  image: "/assets/feet2.png"
+  image: "/assets/app_icons/192x192.png"
 }
 extrude_borders: 2

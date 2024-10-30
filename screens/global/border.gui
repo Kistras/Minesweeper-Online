@@ -1,6 +1,6 @@
 fonts {
   name: "ui"
-  font: "/objects/fonts/ui.font"
+  font: "/objects/fonts/ui_smol.font"
 }
 textures {
   name: "main"
@@ -15,7 +15,7 @@ nodes {
     y: 120.0
   }
   type: TYPE_BOX
-  texture: "main/feet"
+  texture: "main/horz"
   id: "box"
   yanchor: YANCHOR_TOP
   pivot: PIVOT_NW

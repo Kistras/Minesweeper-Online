@@ -1,7 +1,7 @@
 script: "/screens/menu/menu.gui_script"
 fonts {
   name: "ui"
-  font: "/objects/fonts/ui.font"
+  font: "/objects/fonts/ui_smol.font"
 }
 textures {
   name: "main"

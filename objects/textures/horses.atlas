@@ -1,0 +1,4 @@
+images {
+  image: "/assets/horse.png"
+}
+extrude_borders: 2

@@ -1,0 +1,4 @@
+images {
+  image: "/assets/grenade.png"
+}
+extrude_borders: 2
