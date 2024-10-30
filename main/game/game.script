@@ -1,0 +1,189 @@
+local BOARD_SIZE = 12
+local MINE_COUNT = 20 -- ~14%
+
+local E_CLEAR = 1
+local E_MINE = 2
+local E_PMINE = 3
+
+local function generate_board(x_size, y_size, mines) 
+	-- Generate table
+	local tbl = {
+		x_size = x_size,
+		y_size = y_size,
+		mines = mines
+	}
+	for x = 1, x_size do
+		tbl[x] = {}
+		for y = 1, y_size do
+			tbl[x][y] = {
+				type = E_CLEAR,
+				open = false,
+				display = 10 -- Unlocked tile
+			}
+		end
+	end
+
+	-- Place mines
+	-- TODO: remove potential infinite loop
+	local placed_mines = 0
+	while placed_mines < mines do
+		local x = math.random(1, x_size)
+		local y = math.random(1, y_size)
+		if tbl[x][y]["type"] ~= E_MINE then
+			tbl[x][y]["type"] = E_MINE
+			tbl[x][y]["display"] = 11 -- Mine
+			placed_mines = placed_mines + 1
+		end
+	end
+
+	-- Add numbers
+	for x = 1, x_size do
+		for y = 1, y_size do
+			if (tbl[x][y]["type"] == E_CLEAR) then
+				local mine_counter = 0
+				for dx = -1, 1 do
+					for dy = -1, 1 do
+						local fx = x+dx
+						local fy = y+dy
+						if fx > 0 and fx <= x_size and fy > 0 and fy <= y_size and tbl[fx][fy]["type"] == E_MINE then
+							mine_counter = mine_counter + 1
+						end
+					end
+				end
+				
+				if mine_counter > 0 then
+					tbl[x][y]["display"] = mine_counter
+				end
+			end
+		end
+	end
+	return tbl
+end
+
+local function draw_board(board)
+	for x = 1, board["x_size"] do
+		for y = 1, board["y_size"] do
+			tilemap.set_tile("/tilemap#tilemap", "1", x, y, board[x][y]["open"] and board[x][y]["display"] or 9)
+		end
+	end
+end
+
+local function update_tiles(board, tiles)
+	for x, yval in pairs(tiles) do
+		for y, val in pairs(yval) do
+			tilemap.set_tile("/tilemap#tilemap", "1", x, y, board[x][y]["open"] and board[x][y]["display"] or 9)
+		end
+	end
+end
+
+local function click_board(board, nx, ny)
+	if board[nx][ny]["open"] then return end
+
+	local tiles = {}
+	tiles[nx] = {}
+	tiles[nx][ny] = true
+	local tiles_to_update = {{nx,ny}}
+	while #tiles_to_update > 0 do
+		local new_tiles_to_update = {}
+		for key, tile in pairs(tiles_to_update) do
+			local x = tile[1]
+			local y = tile[2]
+
+			if not board[x][y]["open"] then
+				board[x][y]["open"] = true
+				--print(x,y)
+
+				if board[x][y]["display"] == 10 then -- Unlocked tile
+					for dx = -1, 1 do
+						for dy = -1, 1 do
+							local fx = x+dx
+							local fy = y+dy
+							if fx > 0 and fx <= board["x_size"] and fy > 0 and fy <= board["y_size"] -- Is inbounds
+									and (tiles[fx] == nil or tiles[fx][fy] == nil) and not board[fx][fy]["open"] then
+								if not tiles[fx] then tiles[fx] = {} end
+								tiles[fx][fy] = true
+								table.insert(new_tiles_to_update, {fx,fy})
+							end
+						end
+					end
+				end
+			end
+		end
+		tiles_to_update = new_tiles_to_update
+	end
+	update_tiles(board, tiles)
+end
+
+math.randomseed(os.time())
+local board = generate_board(BOARD_SIZE, BOARD_SIZE, MINE_COUNT)
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	
+	draw_board(board)
+	--tilemap.set_tile("/tilemap#tilemap", "1", 1, 1, 5)
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function fixed_update(self, dt)
+	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
+	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
+	-- Physics section of game.project
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+
+	-- local board = generate_board(BOARD_SIZE, BOARD_SIZE, MINE_COUNT)
+	-- draw_board(board)
+
+	if action_id == hash("touch") and action.pressed then
+		--print(action.x, action.y)
+		local pos = go.get_position("/tilemap#tilemap")
+		local scale = go.get_scale("/tilemap")
+		local size = 64*12*scale.x
+
+		local dx = action.x - pos.x
+		local dy = action.y - pos.y
+		if dx > 0 and dx < size and dy > 0 and dy < size then
+			--print("AWOOOOO")
+			local tilex = math.floor(dx/64/scale.x)+1
+			local tiley = math.floor(dy/64/scale.x)+1
+
+			click_board(board, tilex, tiley)
+		end
+	end
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

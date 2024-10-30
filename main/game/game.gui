@@ -8,16 +8,54 @@ textures {
   texture: "/main/global/textures/main.atlas"
 }
 nodes {
-  type: TYPE_TEMPLATE
-  id: "background"
+  position {
+    x: 320.0
+    y: 300.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_BOX
+  id: "container"
   inherit_alpha: true
-  template: "/main/global/bg.gui"
+  size_mode: SIZE_MODE_AUTO
+  visible: false
 }
 nodes {
-  type: TYPE_BOX
-  id: "background/bg-image"
-  parent: "background"
-  template_node_child: true
+  size {
+    x: 300.0
+    y: 300.0
+  }
+  type: TYPE_PIE
+  id: "bounding"
+  parent: "container"
+  inherit_alpha: true
+  alpha: 0.38
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  size {
+    x: 225.0
+    y: 225.0
+  }
+  type: TYPE_PIE
+  id: "joystick"
+  parent: "container"
+  inherit_alpha: true
+  alpha: 0.62
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  type: TYPE_PIE
+  id: "detail"
+  parent: "joystick"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
 }
 layers {
   name: "background"

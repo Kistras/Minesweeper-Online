@@ -1,6 +1,6 @@
-image: "/assets/app_icons/96x96.png"
-tile_width: 16
-tile_height: 16
+image: "/assets/tilesheet.png"
+tile_width: 64
+tile_height: 64
 collision_groups: "minesweeper"
 animations {
   id: "anim"
