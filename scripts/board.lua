@@ -1,7 +1,9 @@
+local M = {}
+
 local E_CLEAR = 1
 local E_MINE = 2
 
-function generate_board(x_size, y_size, mines, tilemap_url) 
+function M.generate_board(x_size, y_size, mines, tilemap_url) 
 	-- Generate table
 	local tbl = {
 		x_size = x_size,
@@ -57,7 +59,7 @@ function generate_board(x_size, y_size, mines, tilemap_url)
 	return tbl
 end
 
-function draw_board(board)
+function M.draw_board(board)
 	for x = 1, board["x_size"] do
 		for y = 1, board["y_size"] do
 			tilemap.set_tile(board["tilemap"], "1", x, y, board[x][y]["open"] and board[x][y]["display"] or 9)
@@ -73,7 +75,7 @@ local function update_tiles(board, tiles)
 	end
 end
 
-function click_board(board, nx, ny, combo)
+function M.click_board(board, nx, ny, combo)
 	local score = 0
 	local combo_broken = false
 	if not board[nx] or not board[nx][ny] then return {score=0, combo_broken=false} end
@@ -120,3 +122,5 @@ function click_board(board, nx, ny, combo)
 	update_tiles(board, tiles)
 	return {score=score, combo_broken=combo_broken or score == 0}
 end
+
+return M

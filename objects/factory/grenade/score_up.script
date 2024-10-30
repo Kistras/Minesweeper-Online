@@ -1,0 +1,39 @@
+local general = require("scripts.general")
+local scores = {}
+local FLOAT_DURATION = 2
+local FLOAT_DIRECTION = vmath.vector3(0, 50, 0)
+
+local function dkill(self, handle, dt)
+	--table.remove(scores, go.get_id()) -- DOESN'T WORK!
+	go.delete()
+end
+
+-- Float the text upwards
+function update(self, dt)
+	local instance = scores[go.get_id()]
+	if instance then
+		local t = math.min(1, (socket.gettime() - instance["start"]) /  FLOAT_DURATION)
+		local pos = vmath.lerp(t, instance["origin"], instance["target"])
+		go.set_position(pos)
+	end
+end
+
+local INIT = hash("init")
+function on_message(self, message_id, message, sender)
+	if message_id == INIT then
+		timer.delay(FLOAT_DURATION, false, dkill)
+		local sign = ""
+		if message["score"] > 0 then 
+			sign = "+"
+			go.set("#text", "color", vmath.vector4(0.2,0.92,0.22,1))
+		elseif message["score"] < 0 then 
+			go.set("#text", "color", vmath.vector4(0.98,0.52,0.22,1))
+		end
+	
+		label.set_text("#text", sign .. message["score"])
+
+		message["start"] = socket.gettime()
+		message["target"] = message["origin"] + FLOAT_DIRECTION
+		scores[go.get_id()] = message
+	end
+end

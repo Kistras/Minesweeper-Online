@@ -25,7 +25,7 @@
   }
   :code {
     :find {
-      :term "use_world_position"
+      :term "VISIB"
     }
   }
   :run {
@@ -37,18 +37,6 @@
   }
   :workflow {
     :recent-files [
-      [
-        "/scripts/board.script"
-        :code
-      ]
-      [
-        "/input/game.input_binding"
-        :cljfx-form-view
-      ]
-      [
-        "/objects/textures/game.atlas"
-        :scene
-      ]
       [
         "/objects/textures/horses.atlas"
         :scene
@@ -62,20 +50,8 @@
         :scene
       ]
       [
-        "/objects/factory/grenade/grenade.go"
-        :scene
-      ]
-      [
         "/liveupdate.settings"
         :cljfx-form-view
-      ]
-      [
-        "/screens/game/game.gui_script"
-        :code
-      ]
-      [
-        "/scripts/board.lua"
-        :code
       ]
       [
         "/objects/fonts/ui.font"
@@ -98,10 +74,6 @@
         :scene
       ]
       [
-        "/scripts/general.lua"
-        :code
-      ]
-      [
         "/scripts/trajectory.lua"
         :code
       ]
@@ -112,10 +84,6 @@
       [
         "/objects/factory/trajectory/trajectory.factory"
         :cljfx-form-view
-      ]
-      [
-        "/objects/factory/grenade/grenade.script"
-        :code
       ]
       [
         "/objects/factory/horse/horse.go"
@@ -130,18 +98,6 @@
         :scene
       ]
       [
-        "/screens/game/game.script"
-        :code
-      ]
-      [
-        "/hyper_trails/trail_maker.lua"
-        :code
-      ]
-      [
-        "/hyper_trails/trail_maker.script"
-        :code
-      ]
-      [
         "/objects/factory/trajectory/trajectory.go"
         :scene
       ]
@@ -154,16 +110,60 @@
         :code
       ]
       [
-        "/scripts/trajectory.script"
-        :code
-      ]
-      [
         "/game.project"
         :cljfx-form-view
       ]
       [
+        "/objects/factory/grenade/score_up.go"
+        :scene
+      ]
+      [
+        "/objects/factory/grenade/grenade.go"
+        :scene
+      ]
+      [
+        "/hyper_trails/trail_maker.lua"
+        :code
+      ]
+      [
+        "/hyper_trails/trail_maker.script"
+        :code
+      ]
+      [
+        "/objects/factory/grenade/score_up.script"
+        :code
+      ]
+      [
+        "/scripts/board.lua"
+        :code
+      ]
+      [
+        "/screens/game/game.gui_script"
+        :code
+      ]
+      [
+        "/scripts/general.lua"
+        :code
+      ]
+      [
+        "/objects/factory/grenade/trajectory.go"
+        :scene
+      ]
+      [
         "/screens/game/game.collection"
         :scene
+      ]
+      [
+        "/screens/game/game.script"
+        :code
+      ]
+      [
+        "/scripts/trajectory.script"
+        :code
+      ]
+      [
+        "/objects/factory/grenade/grenade.script"
+        :code
       ]
     ]
   }

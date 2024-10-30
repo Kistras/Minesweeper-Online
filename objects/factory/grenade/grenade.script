@@ -1,8 +1,8 @@
-require "scripts/general"
+local general = require("scripts.general")
 local grenades = {}
-local MIDDLE_THROW_ADDITIONAL_LERP_OFFSET = 200
 
 local function dkill(self, handle, dt)
+	--table.remove(grenades, go.get_id()) -- DOESN'T WORK!
 	go.delete()
 end
 
@@ -11,12 +11,12 @@ function update(self, dt)
 	if instance and instance["active"] then
 		go.set_rotation(vmath.quat_rotation_z(socket.gettime()*10%(math.pi*2)), "#sprite")
 		local t = math.min(1, (socket.gettime()-instance["start"])/instance["duration"]) -- Min to prevent overshooting/extrapolating
-		local pos = lerp3(t, instance["origin"], instance["point3"], instance["target"])
+		local pos = general.lerp3(t, instance["origin"], instance["point3"], instance["target"])
 		go.set_position(pos)
 
 		if t >= 1 then -- If ended
 			instance["active"] = false
-			msg.post(instance["sender"], "boom", {pos=pos, id=instance["id"]})
+			msg.post(instance["sender"], "boom", {pos=pos, id=instance["id"], owner=instance["owner"]})
 			timer.delay(1, false, dkill)
 			-- TODO: boom
 		end
@@ -30,13 +30,7 @@ function on_message(self, message_id, message, sender)
 	if message_id == INIT then
 		message["start"] = socket.gettime()
 
-		-- Generate middle point to implement parabalistic trajectory
-		local middle = (message["origin"]+message["target"])/2
-		local dir = vmath.normalize(message["target"]-message["origin"])
-		local normal = vmath.cross(dir, vmath.vector3(0, 0, 1))
-		local dirmem = math.abs(vmath.dot(normal, vmath.vector3(0, 1, 0)))
-
-		message["point3"] = middle + vmath.vector3(0, MIDDLE_THROW_ADDITIONAL_LERP_OFFSET, 0) * dirmem
+		message["point3"] = general.middle_point(message["origin"], message["target"])
 		message["active"] = true
 		message["sender"] = sender
 		grenades[go.get_id()] = message

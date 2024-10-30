@@ -1,4 +1,10 @@
-require "scripts/board"
+local _board = require("scripts.board")
+local general = require("scripts.general")
+-- TODO: Sunstrike
+--       Tiles HP 
+--       Tiles resetting (separate mode?)
+--       Mine avoidance thingy
+--       Separate mines that stun the player
 
 local BOARD_SIZE = 12
 local MINE_COUNT = 20 -- ~14%
@@ -6,7 +12,8 @@ local MINE_COUNT = 20 -- ~14%
 local HORSE_LOOP_DURATION = 5
 local HORSE_POWER = 400
 local HORSE_THROW_SPEED = 2
-local EXPLOSION = {{0, 0}, {0, 1}, {1, 0}, {0, -1}, {-1, 0},}
+local EXPLOSION = {{0, 0}, {0, 1}, {1, 0}, {0, -1}, {-1, 0}}
+local VISIBLE_OFFSET = vmath.vector3(0, 0, 0.1) -- +0.1 to move sprite/label over tilemap/etc
 
 local player_score = 0
 local player_combo = 0
@@ -79,7 +86,7 @@ local active = false
 local start = nil
 
 math.randomseed(os.time())
-local board = generate_board(BOARD_SIZE, BOARD_SIZE, MINE_COUNT, "/tilemap#tilemap")
+local board = _board.generate_board(BOARD_SIZE, BOARD_SIZE, MINE_COUNT, "/tilemap#tilemap")
 
 local function move_horses()
 	local hlen = #horses
@@ -104,7 +111,7 @@ function init(self)
 	msg.post(".", "acquire_input_focus")
 	start = socket.gettime()
 
-	draw_board(board)
+	_board.draw_board(board)
 
 	-- Create horses
 	for key, horse in pairs(horses) do
@@ -163,14 +170,15 @@ local function assign_trail(id)
 	end
 end
 
-local GRENADE = hash("grenade")
+local GRENADE_THROW = hash("release")
+local JOYSTICK_MOVE = hash("move")
 local BOOM = hash("boom")
 function on_message(self, message_id, message, sender)
-	if message_id == GRENADE then -- Throwing grenades
+	if message_id == GRENADE_THROW then
 		for key, horse in pairs(horses) do
 			if horse["controlled"] then
 				local id = factory.create("/horses#grenade-factory")
-				local pos = go.get_position(horse["go"]) + vmath.vector3(0, 0, 0.1) -- +0.1 to move sprite over tilemap
+				local pos = go.get_position(horse["go"]) + VISIBLE_OFFSET
 				msg.post(id, "init", {
 					origin = pos,
 					target = pos+message["offsetmod"]*HORSE_POWER,
@@ -179,8 +187,11 @@ function on_message(self, message_id, message, sender)
 					id = id
 				})
 				assign_trail(id)
+				break
 			end
 		end
+		-- Hide trails
+		msg.post("/graphics#trajectory", "reset", {})
 	elseif message_id == BOOM then
 		-- TODO: boom effect
 		local pos = go.get_position("/tilemap#tilemap")
@@ -196,13 +207,20 @@ function on_message(self, message_id, message, sender)
 			local tiley = math.floor(dy/64/scale.x)+1
 
 			for k, v in pairs(EXPLOSION) do
-				local cb = click_board(board, tilex+v[1], tiley+v[2], player_combo)
+				local cb = _board.click_board(board, tilex+v[1], tiley+v[2], player_combo)
 				score = score + cb["score"]
 				if cb["combo_broken"] then
 					combo_broken = true
 				end
 			end
-			-- TODO: make a plink effect with numbers or smth
+			-- Display score-numbers on screen
+			local id = factory.create("/graphics#score-factory")
+			print(id)
+			msg.post(id, "init", {
+				origin = message["pos"] + vmath.vector3(0, 0, 0.1),
+				score = score
+			})
+			
 			player_score = player_score + score
 			label.set_text("/game#score", "Score: " .. player_score)
 		else 
@@ -222,6 +240,21 @@ function on_message(self, message_id, message, sender)
 				local trail = trails[v["trail"]]
 				trail["active"] = false
 				table.remove(grenades, k)
+				break
+			end
+		end
+	elseif message_id == JOYSTICK_MOVE then
+		-- Draw trajectory
+		for key, horse in pairs(horses) do
+			if horse["controlled"] then
+				local pos = go.get_position(horse["go"]) + VISIBLE_OFFSET
+				local target = pos+message["offsetmod"]*HORSE_POWER
+				
+				msg.post("/graphics#trajectory", "update", {
+					origin = pos,
+					target = target,
+					point3 = general.middle_point(pos, target)
+				})
 				break
 			end
 		end
