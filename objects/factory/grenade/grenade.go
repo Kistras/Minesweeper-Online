@@ -2,6 +2,24 @@ components {
   id: "grenade"
   component: "/objects/factory/grenade/grenade.script"
 }
+components {
+  id: "trail_maker"
+  component: "/hyper_trails/trail_maker.script"
+  properties {
+    id: "use_world_position"
+    value: "true"
+    type: PROPERTY_TYPE_BOOLEAN
+  }
+  properties {
+    id: "segment_length_max"
+    value: "10.0"
+    type: PROPERTY_TYPE_NUMBER
+  }
+}
+components {
+  id: "trail_mesh"
+  component: "/hyper_trails/models/trail_mesh.mesh"
+}
 embedded_components {
   id: "sprite"
   type: "sprite"
@@ -13,7 +31,7 @@ embedded_components {
   "}\n"
   ""
   scale {
-    x: 0.1
-    y: 0.1
+    x: 0.025
+    y: 0.025
   }
 }

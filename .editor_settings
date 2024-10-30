@@ -1,0 +1,67 @@
+{
+  :code {
+    :find {
+      :term "os.clock"
+    }
+  }
+  :workflow {
+    :recent-files [
+      [
+        "/scripts/board.script"
+        :code
+      ]
+      [
+        "/input/game.input_binding"
+        :cljfx-form-view
+      ]
+      [
+        "/screens/menu/menu.script"
+        :code
+      ]
+      [
+        "/screens/game/game.gui"
+        :scene
+      ]
+      [
+        "/screens/game/game.script"
+        :code
+      ]
+      [
+        "/screens/game/game.gui_script"
+        :code
+      ]
+      [
+        "/screens/menu/menu.gui"
+        :scene
+      ]
+      [
+        "/screens/menu/menu.gui_script"
+        :code
+      ]
+      [
+        "/objects/factory/grenade/grenade.script"
+        :code
+      ]
+      [
+        "/scripts/board.lua"
+        :code
+      ]
+      [
+        "/game.project"
+        :cljfx-form-view
+      ]
+      [
+        "/screens/game/game.collection"
+        :scene
+      ]
+      [
+        "/objects/factory/grenade/grenade.go"
+        :scene
+      ]
+      [
+        "/hyper_trails/trail_maker.lua"
+        :code
+      ]
+    ]
+  }
+}

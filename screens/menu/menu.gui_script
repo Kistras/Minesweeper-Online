@@ -42,9 +42,10 @@ function final(self)
 	-- Remove this function if not needed
 end
 
+local a = 0
 function update(self, dt)
 	--gui.set_rotation(vmath.quat_axis_angle(vmath.vector3(0, 0, 0.1), os.clock()), "logo")
-	gui.set_rotation(gui.get_node("logo"), vmath.quat_axis_angle(vmath.vector3(0, 0, 0.1), os.clock()))
+	gui.set_rotation(gui.get_node("logo"), vmath.quat_axis_angle(vmath.vector3(0, 0, 0.1), socket.gettime()%(math.pi*2)))
 end
 
 function on_message(self, message_id, message, sender)

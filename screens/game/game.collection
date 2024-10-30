@@ -49,3 +49,7 @@ embedded_instances {
     y: 522.0
   }
 }
+embedded_instances {
+  id: "trails"
+  data: ""
+}

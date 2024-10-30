@@ -28,8 +28,10 @@ nodes {
 }
 nodes {
   type: TYPE_BOX
+  texture: "main/horz"
   id: "ui/box"
   parent: "ui"
+  overridden_fields: 9
   template_node_child: true
 }
 nodes {
@@ -56,7 +58,7 @@ nodes {
     y: 100.0
   }
   type: TYPE_BOX
-  texture: "main/feet"
+  texture: "main/horz"
   id: "buttonTemplateBox"
   pivot: PIVOT_SW
   inherit_alpha: true

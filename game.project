@@ -2,6 +2,7 @@
 title = Minesweeper Online
 developer = Kistras
 publisher = Kistrac Inc.
+dependencies#0 = https://github.com/indiesoftby/defold-hyper-trails/archive/master.zip
 
 [bootstrap]
 main_collection = /screens/proxy.collectionc
