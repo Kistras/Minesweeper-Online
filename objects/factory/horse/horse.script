@@ -1,0 +1,13 @@
+function update(self, dt)
+	--go.set_rotation(vmath.quat_rotation_z(os.clock()*10), "#horse_sprite")
+end
+
+function on_message(self, message_id, message, sender)
+	-- {"sprite":"normiz","controlled":false,"id":1,"name":"TestHorse"}
+	if message_id == hash("init") then
+		label.set_text("#horse_name", message["name"])
+		if not message["controlled"] then
+			go.set("#horse_sprite", "tint.w", 0.35)  -- Make non-controlled horse semi-transparent
+		end
+	end
+end

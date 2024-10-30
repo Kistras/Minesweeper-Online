@@ -1,0 +1,49 @@
+local origin = nil
+local target = nil
+local point3 = nil
+local duration = nil
+local start = nil
+local active = false
+
+local MIDDLE_THROW_ADDITIONAL_LERP_OFFSET = 200
+
+local function lerp3(t, v1, v2, v3) 
+	local a = vmath.lerp(t,v1,v2)
+	local b = vmath.lerp(t,v2,v3)
+	local c = vmath.lerp(t, a, b)
+	return c
+end
+
+function update(self, dt)
+	if active then
+		go.set_rotation(vmath.quat_rotation_z(os.clock()*10))
+		local t = math.min(1, (os.clock()-start)/duration) -- Min to prevent overshooting/extrapolating
+		local pos = lerp3(t, origin, point3, target)
+		go.set_position(pos)
+
+		if t >= 1 then -- If ended
+			active = false
+			-- TODO: boom
+		end
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	-- {"sprite":"normiz","controlled":false,"id":1,"name":"TestHorse"}
+	if message_id == hash("init") then
+		origin = message["origin"]
+		target = message["target"]
+		duration = message["duration"]
+		start = os.clock()
+
+		-- Generate middle point to implement parabalistic trajectory
+		local middle = (origin+target)/2
+		local dir = vmath.normalize(target-origin)
+		local normal = vmath.cross(dir, vmath.vector3(0, 0, 1))
+		local dirmem = math.abs(vmath.dot(normal, vmath.vector3(0, 1, 0)))
+
+		point3 = middle + vmath.vector3(0, MIDDLE_THROW_ADDITIONAL_LERP_OFFSET, 0) * dirmem
+		
+		active = true
+	end
+end

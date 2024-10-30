@@ -4,7 +4,7 @@ fonts {
 }
 textures {
   name: "main"
-  texture: "/main/global/textures/main.atlas"
+  texture: "/objects/textures/main.atlas"
 }
 nodes {
   position {

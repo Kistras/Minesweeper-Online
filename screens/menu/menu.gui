@@ -1,17 +1,17 @@
-script: "/main/menu/menu.gui_script"
+script: "/screens/menu/menu.gui_script"
 fonts {
   name: "ui"
   font: "/objects/fonts/ui.font"
 }
 textures {
   name: "main"
-  texture: "/main/global/textures/main.atlas"
+  texture: "/objects/textures/main.atlas"
 }
 nodes {
   type: TYPE_TEMPLATE
   id: "background"
   inherit_alpha: true
-  template: "/main/global/bg.gui"
+  template: "/screens/global/bg.gui"
 }
 nodes {
   type: TYPE_BOX
@@ -24,7 +24,7 @@ nodes {
   id: "ui"
   layer: "border"
   inherit_alpha: true
-  template: "/main/global/border.gui"
+  template: "/screens/global/border.gui"
 }
 nodes {
   type: TYPE_BOX

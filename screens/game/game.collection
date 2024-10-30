@@ -1,0 +1,51 @@
+name: "menu"
+scale_along_z: 0
+embedded_instances {
+  id: "tilemap"
+  data: "components {\n"
+  "  id: \"tilemap\"\n"
+  "  component: \"/objects/tilemap/tilemap.tilemap\"\n"
+  "}\n"
+  ""
+  position {
+    x: 128.0
+    y: 624.0
+  }
+  scale3 {
+    x: 0.5
+    y: 0.5
+    z: 0.5
+  }
+}
+embedded_instances {
+  id: "game"
+  data: "components {\n"
+  "  id: \"menu\"\n"
+  "  component: \"/screens/game/game.script\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"game\"\n"
+  "  component: \"/screens/game/game.gui\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "horses"
+  data: "embedded_components {\n"
+  "  id: \"horse-factory\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/objects/factory/horse/horse.go\\\"\\n"
+  "\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"grenade-factory\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/objects/factory/grenade/grenade.go\\\"\\n"
+  "\"\n"
+  "}\n"
+  ""
+  position {
+    x: 319.0
+    y: 522.0
+  }
+}

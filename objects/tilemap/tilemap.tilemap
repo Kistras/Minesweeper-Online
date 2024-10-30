@@ -1,4 +1,4 @@
-tile_set: "/main/global/tilemap/tilemap.tilesource"
+tile_set: "/objects/tilemap/tilemap.tilesource"
 layers {
   id: "1"
   z: 0.0

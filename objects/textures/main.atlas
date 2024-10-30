@@ -10,4 +10,10 @@ images {
 images {
   image: "/assets/horse.png"
 }
+images {
+  image: "/assets/horz.jpg"
+}
+images {
+  image: "/assets/grenade.png"
+}
 extrude_borders: 2

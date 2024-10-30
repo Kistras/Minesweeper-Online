@@ -3,7 +3,78 @@ local MINE_COUNT = 20 -- ~14%
 
 local E_CLEAR = 1
 local E_MINE = 2
-local E_PMINE = 3
+
+local HORSE_LOOP_DURATION = 5
+local HORSE_POWER = 400
+local HORSE_THROW_SPEED = 2
+
+local horses = {
+	{
+		name = "TestHorse",
+		sprite = "normiz",
+		grenade = "regular",
+		controlled = false,
+		id = 1,
+		go = nil
+	},
+	{
+		name = "Player",
+		sprite = "normiz",
+		grenade = "regular",
+		controlled = true,
+		id = 2,
+		go = nil
+	},
+	{
+		name = "TestHorse2",
+		sprite = "normiz",
+		grenade = "regular",
+		controlled = false,
+		id = 3,
+		go = nil
+	},
+	{
+		name = "TestHorse3",
+		sprite = "normiz",
+		grenade = "regular",
+		controlled = false,
+		id = 4,
+		go = nil
+	},
+	{
+		name = "TestHorse4",
+		sprite = "normiz",
+		grenade = "regular",
+		controlled = false,
+		id = 5,
+		go = nil
+	},
+	{
+		name = "TestHorse5",
+		sprite = "normiz",
+		grenade = "regular",
+		controlled = false,
+		id = 6,
+		go = nil
+	},
+	{
+		name = "TestHorse6",
+		sprite = "normiz",
+		grenade = "regular",
+		controlled = false,
+		id = 7,
+		go = nil
+	},
+}
+-- TODO: calc based on user's screensize
+local edges = { -- from NE clockwise
+	vmath.vector3(68, 1068, 0),
+	vmath.vector3(572, 1068, 0),
+	vmath.vector3(572, 564, 0),
+	vmath.vector3(68, 564, 0),
+}
+local active = false
+local start = nil
 
 local function generate_board(x_size, y_size, mines) 
 	-- Generate table
@@ -116,11 +187,48 @@ end
 
 math.randomseed(os.time())
 local board = generate_board(BOARD_SIZE, BOARD_SIZE, MINE_COUNT)
+
+local function move_horses()
+	local hlen = #horses
+	local passed_time = os.clock() - start
+	for key, horse in pairs(horses) do
+		local mod = (passed_time / HORSE_LOOP_DURATION + horse["id"] / hlen) % 1
+
+		-- Horses are moving clockwise along the edges of the cube
+		-- So we are grouping them by edges to get start/end points (each is 1/4th of entire path)
+		-- And then lerping between them
+		local edge = math.floor(mod / 0.25)
+		local point_a = edges[edge+1]
+		local point_b = edges[(edge+1)%4+1]
+		
+		mod = (mod / 0.25) % 1 -- Get progress on the current edge
+		local point = vmath.lerp(mod, point_a, point_b)
+		go.set_position(point, horse["go"])
+	end
+end
+
 function init(self)
 	msg.post(".", "acquire_input_focus")
+	start = os.clock()
+
+	local pos = go.get_position("/tilemap#tilemap")
+	local scale = go.get_scale("/tilemap")
+	local size = 64*12*scale.x
 	
 	draw_board(board)
-	--tilemap.set_tile("/tilemap#tilemap", "1", 1, 1, 5)
+
+	-- Create horses
+	for key, horse in pairs(horses) do
+		local id = factory.create("/horses#horse-factory")
+		msg.post(id, "init", horse)
+		horse["go"] = id
+	end
+
+	-- Place horses
+	move_horses()
+
+	-- Start
+	active = true
 end
 
 function final(self)
@@ -130,9 +238,7 @@ function final(self)
 end
 
 function update(self, dt)
-	-- Add update code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
+	move_horses() 
 end
 
 function fixed_update(self, dt)
@@ -143,29 +249,29 @@ function fixed_update(self, dt)
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
 end
-
 function on_message(self, message_id, message, sender)
 	-- Add message-handling code here
 	-- Learn more: https://defold.com/manuals/message-passing/
 	-- Remove this function if not needed
+	if message_id == hash("grenade") then
+		for key, horse in pairs(horses) do
+			if horse["controlled"] then
+				local id = factory.create("/horses#grenade-factory")
+				local pos = go.get_position(horse["go"]) + vmath.vector3(0, 0, 0.1) -- +0.1 to move sprite over tilemap
+				msg.post(id, "init", {
+					origin = pos,
+					target = pos+message["offsetmod"]*HORSE_POWER,
+					duration = HORSE_THROW_SPEED
+				})
+			end
+		end
+	end
 end
 
 function on_input(self, action_id, action)
-	-- Add input-handling code here. The game object this script is attached to
-	-- must have acquired input focus:
-	--
-	--    msg.post(".", "acquire_input_focus")
-	--
-	-- All mapped input bindings will be received. Mouse and touch input will
-	-- be received regardless of where on the screen it happened.
-	-- Learn more: https://defold.com/manuals/input/
-	-- Remove this function if not needed
-
-	-- local board = generate_board(BOARD_SIZE, BOARD_SIZE, MINE_COUNT)
-	-- draw_board(board)
-
+	-- {"pressed":false,"y":342.5,"screen_y":342,"dx":0,"value":0,"released":true,"repeated":false,"screen_dx":0,"screen_dy":0,"screen_x":332,"dy":0,"x":332.5}
 	if action_id == hash("touch") and action.pressed then
-		--print(action.x, action.y)
+		-- If tilemap is pressed. Temp
 		local pos = go.get_position("/tilemap#tilemap")
 		local scale = go.get_scale("/tilemap")
 		local size = 64*12*scale.x
@@ -173,7 +279,6 @@ function on_input(self, action_id, action)
 		local dx = action.x - pos.x
 		local dy = action.y - pos.y
 		if dx > 0 and dx < size and dy > 0 and dy < size then
-			--print("AWOOOOO")
 			local tilex = math.floor(dx/64/scale.x)+1
 			local tiley = math.floor(dy/64/scale.x)+1
 

@@ -1,11 +1,11 @@
-script: "/main/game/game.gui_script"
+script: "/screens/game/game.gui_script"
 fonts {
   name: "ui"
   font: "/objects/fonts/ui.font"
 }
 textures {
   name: "main"
-  texture: "/main/global/textures/main.atlas"
+  texture: "/objects/textures/main.atlas"
 }
 nodes {
   position {

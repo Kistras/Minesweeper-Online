@@ -4,11 +4,11 @@ embedded_instances {
   id: "go"
   data: "components {\n"
   "  id: \"menu\"\n"
-  "  component: \"/main/menu/menu.gui\"\n"
+  "  component: \"/screens/menu/menu.gui\"\n"
   "}\n"
   "components {\n"
   "  id: \"menu1\"\n"
-  "  component: \"/main/menu/menu.script\"\n"
+  "  component: \"/screens/menu/menu.script\"\n"
   "}\n"
   ""
 }

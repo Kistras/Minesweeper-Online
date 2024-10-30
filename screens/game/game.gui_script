@@ -1,0 +1,64 @@
+function init(self)
+	-- Add initialization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	--gui.set_rotation(vmath.quat_axis_angle(vmath.vector3(0, 0, 0.1), os.clock()), "logo")
+	--gui.set_rotation(gui.get_node("logo"), vmath.quat_axis_angle(vmath.vector3(0, 0, 0.1), os.clock()))
+end
+
+function on_message(self, message_id, message, sender)
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+
+local joystick_pressed = false
+local joystick_offset = nil
+local JOYSTICK_OFFSET_MAX_LENGTH = 200
+function on_input(self, action_id, action)
+	if action_id == hash("touch") then
+		local joy = gui.get_node("joystick")
+		local container = gui.get_node("container")
+		
+		if action.pressed then
+			if gui.pick_node(joy, action.x, action.y) then
+				joystick_pressed = true
+			end
+		elseif action.released and joystick_pressed then
+			local joystick_offset_length = vmath.length_sqr(joystick_offset)
+			if joystick_offset_length > 1 then
+				msg.post("/game#menu", "grenade", {offsetmod=joystick_offset/JOYSTICK_OFFSET_MAX_LENGTH})
+			end
+			joystick_pressed = false
+			joystick_offset = vmath.vector3(0, 0, 0)
+			gui.set_position(joy, joystick_offset)
+		end
+
+		-- Move joystick if it's been pressed
+		if joystick_pressed then
+			local joy_pos = gui.get_position(container)
+
+			joystick_offset = vmath.vector3(action.x, action.y, 0) - joy_pos
+			local offset_length = vmath.length(joystick_offset)
+			if offset_length > JOYSTICK_OFFSET_MAX_LENGTH then
+				joystick_offset = joystick_offset / offset_length * JOYSTICK_OFFSET_MAX_LENGTH
+			end
+			gui.set_position(joy, joystick_offset)
+		end
+	end
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end
