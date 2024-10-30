@@ -7,4 +7,7 @@ images {
 images {
   image: "/assets/feet2.png"
 }
+images {
+  image: "/assets/horse.png"
+}
 extrude_borders: 2

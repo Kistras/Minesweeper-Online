@@ -1,6 +1,6 @@
 textures {
   name: "main"
-  texture: "/main/global/materials/main.atlas"
+  texture: "/main/global/textures/main.atlas"
 }
 nodes {
   size {
@@ -11,11 +11,7 @@ nodes {
   texture: "main/feet2"
   id: "bg-image"
   pivot: PIVOT_SW
-  layer: "background"
   inherit_alpha: true
-}
-layers {
-  name: "background"
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT

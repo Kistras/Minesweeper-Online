@@ -1,0 +1,72 @@
+local MENU_BUTTONS_NAMES = {"Shop", "Scoreboards", "Settings", "Play"}
+local MENU_BUTTONS = {
+	Shop = {
+		ref = "show_shop"
+	}, 
+	Scoreboards = {
+		ref = "show_scoreboards"
+	}, 
+	Settings = {
+		ref = "show_settings"
+	}, 
+	Play = {
+		ref = "show_play" -- TODO: Lobby
+	}
+}
+
+function init(self)
+	-- Add initialization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+
+	-- Create buttons
+	-- TODO: Redraw is screensize is changed
+	local bt = gui.get_tree(gui.get_node("buttonTemplateBox"))
+	gui.set_enabled(bt["buttonTemplateBox"], false)
+	for key, btext in pairs(MENU_BUTTONS_NAMES) do
+		local button = gui.clone_tree(bt["buttonTemplateBox"])
+		local box = button["buttonTemplateBox"]
+		gui.set_enabled(box, true)
+		gui.set_text(button["text"], btext)
+		-- TODO: (screenWidth - buttonWidth)/2
+		gui.set_position(box, vmath.vector3((640-450)/2, 100*(key-1) + 25 * key, 0))
+		MENU_BUTTONS[btext]["box"] = box
+	end
+
+	gui.delete_node(bt["buttonTemplateBox"])
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	--gui.set_rotation(vmath.quat_axis_angle(vmath.vector3(0, 0, 0.1), os.clock()), "logo")
+	gui.set_rotation(gui.get_node("logo"), vmath.quat_axis_angle(vmath.vector3(0, 0, 0.1), os.clock()))
+end
+
+function on_message(self, message_id, message, sender)
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("touch") and action.pressed then
+		for key, button in pairs(MENU_BUTTONS) do
+			if gui.pick_node(button["box"], action.x, action.y) then
+				--print(button["ref"])
+				msg.post("main:/controller#controller", button["ref"])
+				break
+			end
+		end
+	end
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

@@ -1,0 +1,29 @@
+script: "/main/game/game.gui_script"
+fonts {
+  name: "ui"
+  font: "/objects/fonts/ui.font"
+}
+textures {
+  name: "main"
+  texture: "/main/global/textures/main.atlas"
+}
+nodes {
+  type: TYPE_TEMPLATE
+  id: "background"
+  inherit_alpha: true
+  template: "/main/global/bg.gui"
+}
+nodes {
+  type: TYPE_BOX
+  id: "background/bg-image"
+  parent: "background"
+  template_node_child: true
+}
+layers {
+  name: "background"
+}
+layers {
+  name: "border"
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

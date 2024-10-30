@@ -1,7 +1,11 @@
-script: "/main/menu/main.gui_script"
+script: "/main/menu/menu.gui_script"
+fonts {
+  name: "ui"
+  font: "/objects/fonts/ui.font"
+}
 textures {
   name: "main"
-  texture: "/main/global/materials/main.atlas"
+  texture: "/main/global/textures/main.atlas"
 }
 nodes {
   type: TYPE_TEMPLATE
@@ -16,9 +20,6 @@ nodes {
   template_node_child: true
 }
 nodes {
-  position {
-    z: 10.0
-  }
   type: TYPE_TEMPLATE
   id: "ui"
   layer: "border"
@@ -41,7 +42,6 @@ nodes {
   position {
     x: 320.0
     y: 828.0
-    z: 10.0
   }
   type: TYPE_BOX
   texture: "main/192x192"
@@ -50,11 +50,38 @@ nodes {
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
 }
-layers {
-  name: "border"
+nodes {
+  size {
+    x: 450.0
+    y: 100.0
+  }
+  type: TYPE_BOX
+  texture: "main/feet"
+  id: "buttonTemplateBox"
+  pivot: PIVOT_SW
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 225.0
+    y: 50.0
+  }
+  size {
+    x: 450.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "<text>"
+  font: "ui"
+  id: "text"
+  parent: "buttonTemplateBox"
+  inherit_alpha: true
 }
 layers {
   name: "background"
+}
+layers {
+  name: "border"
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT

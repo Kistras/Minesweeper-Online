@@ -12,7 +12,7 @@ end
 
 function update(self, dt)
 	--gui.set_rotation(vmath.quat_axis_angle(vmath.vector3(0, 0, 0.1), os.clock()), "logo")
-	gui.set_rotation(gui.get_node("logo"), vmath.quat_axis_angle(vmath.vector3(0, 0, 0.1), os.clock()))
+	--gui.set_rotation(gui.get_node("logo"), vmath.quat_axis_angle(vmath.vector3(0, 0, 0.1), os.clock()))
 end
 
 function on_message(self, message_id, message, sender)

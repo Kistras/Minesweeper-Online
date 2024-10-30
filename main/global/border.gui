@@ -4,7 +4,7 @@ fonts {
 }
 textures {
   name: "main"
-  texture: "/main/global/materials/main.atlas"
+  texture: "/main/global/textures/main.atlas"
 }
 nodes {
   position {
@@ -19,9 +19,7 @@ nodes {
   id: "box"
   yanchor: YANCHOR_TOP
   pivot: PIVOT_NW
-  layer: "border"
   inherit_alpha: true
-  material: "foreground"
 }
 nodes {
   position {
@@ -37,15 +35,7 @@ nodes {
   font: "ui"
   id: "text"
   parent: "box"
-  layer: "border"
   inherit_alpha: true
-}
-layers {
-  name: "border"
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT
-materials {
-  name: "foreground"
-  material: "/main/global/materials/foreground.material"
-}

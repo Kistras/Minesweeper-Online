@@ -1,0 +1,22 @@
+name: "main"
+scale_along_z: 0
+embedded_instances {
+  id: "controller"
+  data: "components {\n"
+  "  id: \"controller\"\n"
+  "  component: \"/main/proxy_controller.script\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"menuproxy\"\n"
+  "  type: \"collectionproxy\"\n"
+  "  data: \"collection: \\\"/main/menu/menu.collection\\\"\\n"
+  "\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"gameproxy\"\n"
+  "  type: \"collectionproxy\"\n"
+  "  data: \"collection: \\\"/main/game/game.collection\\\"\\n"
+  "\"\n"
+  "}\n"
+  ""
+}

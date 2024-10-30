@@ -4,7 +4,7 @@ developer = Kistras
 publisher = Kistrac Inc.
 
 [bootstrap]
-main_collection = /main/menu/menu.collectionc
+main_collection = /main/proxy.collectionc
 
 [input]
 game_binding = /input/game.input_bindingc
