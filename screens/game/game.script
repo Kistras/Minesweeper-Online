@@ -123,21 +123,47 @@ function final(self)
 	-- Remove this function if not needed
 end
 
+local grenades = {}
+local trails = {}
+for i = 1, 8 do -- For 8 trails
+	trails[i] = {
+		id = "/trail" .. i,
+		active = false,
+		tick = 0
+	}
+end
 function update(self, dt)
 	move_horses() 
+
+	-- move trails
+	for k, v in pairs(grenades) do
+		if v["trail"] then
+			local trail = trails[v["trail"]]
+			local pos = go.get_position(v["id"])
+			go.set_position(pos, trail["id"])
+			if trail["tick"] <= 5 then
+				trail["tick"] = trail["tick"] + 1
+				msg.post(trail["id"] .. "#trail_maker", "reset", {})
+			end
+		end
+	end
 end
 
-function fixed_update(self, dt)
-	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
-	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
-	-- Physics section of game.project
-	-- Add update code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
+local function assign_trail(id) 
+	for k, v in pairs(trails) do
+		if not v["active"] then
+			table.insert(grenades, {id=id, trail=k})
+			v["active"] = true
+			v["tick"] = 0
+			break
+		end
+	end
 end
 
+local GRENADE = hash("grenade")
+local BOOM = hash("boom")
 function on_message(self, message_id, message, sender)
-	if message_id == hash("grenade") then -- Throwing grenades
+	if message_id == GRENADE then -- Throwing grenades
 		for key, horse in pairs(horses) do
 			if horse["controlled"] then
 				local id = factory.create("/horses#grenade-factory")
@@ -146,16 +172,32 @@ function on_message(self, message_id, message, sender)
 					origin = pos,
 					target = pos+message["offsetmod"]*HORSE_POWER,
 					duration = HORSE_THROW_SPEED,
-					owner = horse["id"]
+					owner = horse["id"],
+					id = id
 				})
+				assign_trail(id)
+			end
+		end
+	elseif message_id == BOOM then
+		print(sender)
+		-- TODO: boom
+
+		for k, v in pairs(grenades) do
+			local id = message["id"]
+			if v["id"] == id then
+				local trail = trails[v["trail"]]
+				trail["active"] = false
+				table.remove(grenades, k)
+				break
 			end
 		end
 	end
 end
 
+local TOUCH = hash("touch")
 function on_input(self, action_id, action)
 	-- {"pressed":false,"y":342.5,"screen_y":342,"dx":0,"value":0,"released":true,"repeated":false,"screen_dx":0,"screen_dy":0,"screen_x":332,"dy":0,"x":332.5}
-	if action_id == hash("touch") and action.pressed then
+	if action_id == TOUCH and action.pressed then
 		-- If tilemap is pressed. Temp
 		local pos = go.get_position("/tilemap#tilemap")
 		local scale = go.get_scale("/tilemap")

@@ -8,16 +8,22 @@ local function lerp3(t, v1, v2, v3)
 	return c
 end
 
+local function dkill(self, handle, dt)
+	go.delete()
+end
+
 function update(self, dt)
 	local instance = grenades[go.get_id()]
 	if instance and instance["active"] then
-		go.set_rotation(vmath.quat_rotation_z(socket.gettime()*10%(math.pi*2)))
+		go.set_rotation(vmath.quat_rotation_z(socket.gettime()*10%(math.pi*2)), "#sprite")
 		local t = math.min(1, (socket.gettime()-instance["start"])/instance["duration"]) -- Min to prevent overshooting/extrapolating
 		local pos = lerp3(t, instance["origin"], instance["point3"], instance["target"])
 		go.set_position(pos)
 
 		if t >= 1 then -- If ended
 			instance["active"] = false
+			msg.post(instance["sender"], "boom", {pos=pos, id=instance["id"]})
+			timer.delay(1, false, dkill)
 			-- TODO: boom
 		end
 	end
@@ -37,6 +43,7 @@ function on_message(self, message_id, message, sender)
 
 		message["point3"] = middle + vmath.vector3(0, MIDDLE_THROW_ADDITIONAL_LERP_OFFSET, 0) * dirmem
 		message["active"] = true
+		message["sender"] = sender
 		grenades[go.get_id()] = message
 	end
 end

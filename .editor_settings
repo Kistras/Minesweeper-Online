@@ -1,4 +1,28 @@
 {
+  :bundle {
+    :android {
+      :architecture {
+        :arm64-android false
+        :armv7-android true
+      }
+      :format "apk"
+      :install true
+      :key-pass ""
+      :keystore ""
+      :keystore-pass ""
+      :launch true
+    }
+    :build-report false
+    :contentless false
+    :debug-symbols true
+    :liveupdate false
+    :output-directory "D:\\x86_64-win32"
+    :texture-compression "enabled"
+    :variant "debug"
+    :windows {
+      :platform "x86_64-win32"
+    }
+  }
   :code {
     :find {
       :term "os.clock"
@@ -19,14 +43,6 @@
         :code
       ]
       [
-        "/screens/game/game.gui"
-        :scene
-      ]
-      [
-        "/screens/game/game.script"
-        :code
-      ]
-      [
         "/screens/game/game.gui_script"
         :code
       ]
@@ -39,11 +55,23 @@
         :code
       ]
       [
-        "/objects/factory/grenade/grenade.script"
+        "/scripts/board.lua"
         :code
       ]
       [
-        "/scripts/board.lua"
+        "/liveupdate.settings"
+        :cljfx-form-view
+      ]
+      [
+        "/objects/textures/main.atlas"
+        :scene
+      ]
+      [
+        "/screens/global/bg.gui"
+        :scene
+      ]
+      [
+        "/hyper_trails/trail_maker.lua"
         :code
       ]
       [
@@ -51,7 +79,19 @@
         :cljfx-form-view
       ]
       [
-        "/screens/game/game.collection"
+        "/objects/factory/grenade/grenade.script"
+        :code
+      ]
+      [
+        "/hyper_trails/trail_maker.script"
+        :code
+      ]
+      [
+        "/screens/game/game.gui"
+        :scene
+      ]
+      [
+        "/screens/menu/menu.collection"
         :scene
       ]
       [
@@ -59,7 +99,11 @@
         :scene
       ]
       [
-        "/hyper_trails/trail_maker.lua"
+        "/screens/game/game.collection"
+        :scene
+      ]
+      [
+        "/screens/game/game.script"
         :code
       ]
     ]
