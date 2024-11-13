@@ -5,6 +5,6 @@ images {
   image: "/assets/horz.jpg"
 }
 images {
-  image: "/assets/app_icons/192x192.png"
+  image: "/assets/icon_transparent.png"
 }
 extrude_borders: 2

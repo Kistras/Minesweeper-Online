@@ -1,7 +1,7 @@
 local _board = require("scripts.board")
 local general = require("scripts.general")
 -- TODO: Sunstrike
---       Tiles HP 
+--       Tiles HP
 --       Tiles resetting (separate mode?)
 --       Mine avoidance thingy
 --       Separate mines that stun the player
@@ -17,6 +17,12 @@ local VISIBLE_OFFSET = vmath.vector3(0, 0, 0.1) -- +0.1 to move sprite/label ove
 
 local player_score = 0
 local player_combo = 0
+local server_data = {
+	game_duration = 30,
+	active = false,
+	start = nil,
+	-- TODO
+}
 local horses = {
 	{
 		name = "TestHorse",
@@ -82,15 +88,13 @@ local edges = { -- from NE clockwise
 	vmath.vector3(572, 564, 0),
 	vmath.vector3(68, 564, 0),
 }
-local active = false
-local start = nil
 
 math.randomseed(os.time())
 local board = _board.generate_board(BOARD_SIZE, BOARD_SIZE, MINE_COUNT, "/tilemap#tilemap")
 
 local function move_horses()
 	local hlen = #horses
-	local passed_time = socket.gettime() - start
+	local passed_time = socket.gettime() - server_data["start"]
 	for key, horse in pairs(horses) do
 		local mod = (passed_time / HORSE_LOOP_DURATION + horse["id"] / hlen) % 1
 
@@ -109,7 +113,7 @@ end
 
 function init(self)
 	msg.post(".", "acquire_input_focus")
-	start = socket.gettime()
+	server_data["start"] = socket.gettime()
 
 	_board.draw_board(board)
 
@@ -124,7 +128,7 @@ function init(self)
 	move_horses()
 
 	-- Start
-	active = true
+	server_data["active"] = true
 end
 
 function final(self)
@@ -215,7 +219,6 @@ function on_message(self, message_id, message, sender)
 			end
 			-- Display score-numbers on screen
 			local id = factory.create("/graphics#score-factory")
-			print(id)
 			msg.post(id, "init", {
 				origin = message["pos"] + vmath.vector3(0, 0, 0.1),
 				score = score

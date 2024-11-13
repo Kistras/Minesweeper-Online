@@ -1,9 +1,10 @@
 [project]
 title = Minesweeper Online
 developer = Kistras
-publisher = Kistrac Inc.
+publisher = Kistras Inc.
 dependencies#0 = https://github.com/indiesoftby/defold-hyper-trails/archive/master.zip
 dependencies#1 = https://github.com/KorolevSoftware/defold-faststream/archive/refs/tags/beta_1.0.zip
+dependencies#2 = https://github.com/subsoap/defsave/archive/master.zip
 
 [bootstrap]
 main_collection = /screens/proxy.collectionc
@@ -28,7 +29,6 @@ app_icon_72x72 = /assets/app_icons/icon_72.png
 app_icon_144x144 = /assets/app_icons/icon_144.png
 app_icon_167x167 = /assets/app_icons/192x192.png
 bundle_identifier = com.kistras.minesweeperonline
-icons_asset = /assets/Assets.car
 
 [osx]
 bundle_identifier = com.example.todo
@@ -50,4 +50,7 @@ shared_state = 1
 gravity_y = -1000.0
 scale = 0.01
 velocity_threshold = 100.0
+
+[windows]
+app_icon = /assets/256x256-transparent.ico
 
