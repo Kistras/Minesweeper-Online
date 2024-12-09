@@ -1,5 +1,6 @@
-local _board = require("scripts.board")
-local general = require("scripts.general")
+local _board = require "scripts.board"
+local general = require "scripts.general"
+local GGG = require "scripts.global"
 -- TODO: Sunstrike
 --       Tiles HP
 --       Tiles resetting (separate mode?)
@@ -23,6 +24,17 @@ local server_data = {
 	start = nil,
 	-- TODO
 }
+
+local grenades = {}
+local trails = {}
+for i = 1, 8 do -- For 8 trails
+	trails[i] = {
+		id = "/trail" .. i,
+		active = false,
+		tick = 0
+	}
+end
+
 local horses = {
 	{
 		name = "TestHorse",
@@ -97,69 +109,20 @@ local function move_horses()
 	local passed_time = socket.gettime() - server_data["start"]
 	for key, horse in pairs(horses) do
 		local mod = (passed_time / HORSE_LOOP_DURATION + horse["id"] / hlen) % 1
-
-		-- Horses are moving clockwise along the edges of the cube
-		-- So we are grouping them by edges to get start/end points (each is 1/4th of entire path)
-		-- And then lerping between them
 		local edge = math.floor(mod / 0.25)
 		local point_a = edges[edge+1]
 		local point_b = edges[(edge+1)%4+1]
-		
 		mod = (mod / 0.25) % 1 -- Get progress on the current edge
 		local point = vmath.lerp(mod, point_a, point_b)
 		go.set_position(point, horse["go"])
 	end
 end
 
-function init(self)
-	msg.post(".", "acquire_input_focus")
-	server_data["start"] = socket.gettime()
-
-	_board.draw_board(board)
-
-	-- Create horses
+local function create_horses()
 	for key, horse in pairs(horses) do
 		local id = factory.create("/horses#horse-factory")
 		msg.post(id, "init", horse)
 		horse["go"] = id
-	end
-
-	-- Place horses
-	move_horses()
-
-	-- Start
-	server_data["active"] = true
-end
-
-function final(self)
-	-- Add finalization code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
-end
-
-local grenades = {}
-local trails = {}
-for i = 1, 8 do -- For 8 trails
-	trails[i] = {
-		id = "/trail" .. i,
-		active = false,
-		tick = 0
-	}
-end
-function update(self, dt)
-	move_horses() 
-
-	-- move trails
-	for k, v in pairs(grenades) do
-		if v["trail"] then
-			local trail = trails[v["trail"]]
-			local pos = go.get_position(v["id"])
-			go.set_position(pos, trail["id"])
-			if trail["tick"] <= 5 then
-				trail["tick"] = trail["tick"] + 1
-				msg.post(trail["id"] .. "#trail_maker", "reset", {})
-			end
-		end
 	end
 end
 
@@ -174,92 +137,134 @@ local function assign_trail(id)
 	end
 end
 
+local function handle_grenade_throw(message)
+	for key, horse in pairs(horses) do
+		if horse["controlled"] then
+			local id = factory.create("/horses#grenade-factory")
+			local pos = go.get_position(horse["go"]) + VISIBLE_OFFSET
+			msg.post(id, "init", {
+				origin = pos,
+				target = pos + message["offsetmod"] * HORSE_POWER,
+				duration = HORSE_THROW_SPEED,
+				owner = horse["id"],
+				id = id
+			})
+			assign_trail(id)
+			break
+		end
+		msg.post("/graphics#trajectory", "reset", {})
+	end
+end
+
+local function handle_boom(message)
+	local pos = go.get_position("/tilemap#tilemap")
+	local scale = go.get_scale("/tilemap")
+	local size = 64*12*scale.x
+
+	local dx = message["pos"].x - pos.x
+	local dy = message["pos"].y - pos.y
+	local combo_broken = false
+	local score = 0
+	if dx > 0 and dx < size and dy > 0 and dy < size then
+		local tilex = math.floor(dx/64/scale.x)+1
+		local tiley = math.floor(dy/64/scale.x)+1
+
+		for k, v in pairs(EXPLOSION) do
+			local cb = _board.click_board(board, tilex+v[1], tiley+v[2], player_combo)
+			score = score + cb["score"]
+			if cb["combo_broken"] then
+				combo_broken = true
+			end
+		end
+		-- Display score-numbers on screen
+		local id = factory.create("/graphics#score-factory")
+		msg.post(id, "init", {
+			origin = message["pos"] + vmath.vector3(0, 0, 0.1),
+			score = score
+		})
+		
+		player_score = player_score + score
+		label.set_text("/game#score", "Score: " .. player_score)
+	else 
+		combo_broken = true
+	end
+	if combo_broken == true or score == 0 then
+		player_combo = math.max(0, player_combo - 1)
+	else 
+		player_combo = player_combo + 1
+	end
+	player_score = player_score + score
+
+	-- Remove trails
+	for k, v in pairs(grenades) do
+		local id = message["id"]
+		if v["id"] == id then
+			local trail = trails[v["trail"]]
+			trail["active"] = false
+			table.remove(grenades, k)
+			break
+		end
+	end
+end
+
+local function handle_joystick_move(message)
+	for key, horse in pairs(horses) do
+		if horse["controlled"] then
+			local pos = go.get_position(horse["go"]) + VISIBLE_OFFSET
+			local target = pos + message["offsetmod"] * HORSE_POWER
+			msg.post("/graphics#trajectory", "update", {
+				origin = pos,
+				target = target,
+				point3 = general.middle_point(pos, target)
+			})
+			break
+		end
+	end
+end
+
+function init(self)
+	if GGG.current_screen ~= "#gameproxy" then return end
+	msg.post(".", "acquire_input_focus")
+	server_data["start"] = socket.gettime()
+	_board.draw_board(board)
+	create_horses()
+	move_horses()
+	server_data["active"] = true
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	if GGG.current_screen ~= "#gameproxy" then return end
+	move_horses() 
+	for k, v in pairs(grenades) do
+		if v["trail"] then
+			local trail = trails[v["trail"]]
+			local pos = go.get_position(v["id"])
+			go.set_position(pos, trail["id"])
+			if trail["tick"] <= 5 then
+				trail["tick"] = trail["tick"] + 1
+				msg.post(trail["id"] .. "#trail_maker", "reset", {})
+			end
+		end
+	end
+end
+
 local GRENADE_THROW = hash("release")
 local JOYSTICK_MOVE = hash("move")
 local BOOM = hash("boom")
+
 function on_message(self, message_id, message, sender)
+	if GGG.current_screen ~= "#gameproxy" then return end
 	if message_id == GRENADE_THROW then
-		for key, horse in pairs(horses) do
-			if horse["controlled"] then
-				local id = factory.create("/horses#grenade-factory")
-				local pos = go.get_position(horse["go"]) + VISIBLE_OFFSET
-				msg.post(id, "init", {
-					origin = pos,
-					target = pos+message["offsetmod"]*HORSE_POWER,
-					duration = HORSE_THROW_SPEED,
-					owner = horse["id"],
-					id = id
-				})
-				assign_trail(id)
-				break
-			end
-		end
-		-- Hide trails
-		msg.post("/graphics#trajectory", "reset", {})
+		handle_grenade_throw(message)
 	elseif message_id == BOOM then
-		-- TODO: boom effect
-		local pos = go.get_position("/tilemap#tilemap")
-		local scale = go.get_scale("/tilemap")
-		local size = 64*12*scale.x
-
-		local dx = message["pos"].x - pos.x
-		local dy = message["pos"].y - pos.y
-		local combo_broken = false
-		local score = 0
-		if dx > 0 and dx < size and dy > 0 and dy < size then
-			local tilex = math.floor(dx/64/scale.x)+1
-			local tiley = math.floor(dy/64/scale.x)+1
-
-			for k, v in pairs(EXPLOSION) do
-				local cb = _board.click_board(board, tilex+v[1], tiley+v[2], player_combo)
-				score = score + cb["score"]
-				if cb["combo_broken"] then
-					combo_broken = true
-				end
-			end
-			-- Display score-numbers on screen
-			local id = factory.create("/graphics#score-factory")
-			msg.post(id, "init", {
-				origin = message["pos"] + vmath.vector3(0, 0, 0.1),
-				score = score
-			})
-			
-			player_score = player_score + score
-			label.set_text("/game#score", "Score: " .. player_score)
-		else 
-			combo_broken = true
-		end
-		if combo_broken == true or score == 0 then
-			player_combo = math.max(0, player_combo - 1)
-		else 
-			player_combo = player_combo + 1
-		end
-		player_score = player_score + score
-
-		-- Remove trails
-		for k, v in pairs(grenades) do
-			local id = message["id"]
-			if v["id"] == id then
-				local trail = trails[v["trail"]]
-				trail["active"] = false
-				table.remove(grenades, k)
-				break
-			end
-		end
+		handle_boom(message)
 	elseif message_id == JOYSTICK_MOVE then
-		-- Draw trajectory
-		for key, horse in pairs(horses) do
-			if horse["controlled"] then
-				local pos = go.get_position(horse["go"]) + VISIBLE_OFFSET
-				local target = pos+message["offsetmod"]*HORSE_POWER
-				
-				msg.post("/graphics#trajectory", "update", {
-					origin = pos,
-					target = target,
-					point3 = general.middle_point(pos, target)
-				})
-				break
-			end
-		end
+		handle_joystick_move(message)
 	end
 end

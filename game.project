@@ -42,6 +42,7 @@ app_icon_144x144 = /assets/app_icons/144x144.png
 app_icon_192x192 = /assets/app_icons/192x192.png
 input_method = HiddenInputField
 package = com.kistras.minesweeperonline
+debuggable = 1
 
 [script]
 shared_state = 1

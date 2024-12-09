@@ -18,5 +18,11 @@ embedded_instances {
   "  data: \"collection: \\\"/screens/game/game.collection\\\"\\n"
   "\"\n"
   "}\n"
+  "embedded_components {\n"
+  "  id: \"settingsproxy\"\n"
+  "  type: \"collectionproxy\"\n"
+  "  data: \"collection: \\\"/screens/settings/settings.collection\\\"\\n"
+  "\"\n"
+  "}\n"
   ""
 }

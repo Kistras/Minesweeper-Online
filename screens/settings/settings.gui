@@ -1,0 +1,152 @@
+script: "/screens/settings/settings.gui_script"
+fonts {
+  name: "ui"
+  font: "/objects/fonts/ui_smol.font"
+}
+textures {
+  name: "main"
+  texture: "/objects/textures/main.atlas"
+}
+nodes {
+  type: TYPE_TEMPLATE
+  id: "background"
+  inherit_alpha: true
+  template: "/screens/global/bg.gui"
+}
+nodes {
+  type: TYPE_BOX
+  id: "background/bg-image"
+  parent: "background"
+  template_node_child: true
+}
+nodes {
+  type: TYPE_TEMPLATE
+  id: "ui"
+  layer: "border"
+  inherit_alpha: true
+  template: "/screens/global/border.gui"
+}
+nodes {
+  type: TYPE_BOX
+  texture: "main/horz"
+  id: "ui/box"
+  parent: "ui"
+  overridden_fields: 9
+  template_node_child: true
+}
+nodes {
+  type: TYPE_TEXT
+  id: "ui/text"
+  parent: "ui/box"
+  template_node_child: true
+}
+nodes {
+  position {
+    x: 20.0
+    y: 20.0
+  }
+  size {
+    x: 600.0
+    y: 100.0
+  }
+  type: TYPE_BOX
+  texture: "main/horz"
+  id: "go-back-button"
+  pivot: PIVOT_SW
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 300.0
+    y: 50.0
+  }
+  size {
+    x: 600.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "Go back\n"
+  ""
+  font: "ui"
+  id: "back-text"
+  parent: "go-back-button"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 20.0
+    y: 850.0
+  }
+  size {
+    x: 600.0
+    y: 100.0
+  }
+  color {
+    x: 0.702
+    y: 0.702
+    z: 0.702
+  }
+  type: TYPE_BOX
+  id: "name-setting"
+  pivot: PIVOT_SW
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 20.0
+    y: 50.0
+  }
+  size {
+    x: 560.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "Amogus\n"
+  ""
+  font: "ui"
+  id: "setting-text"
+  pivot: PIVOT_W
+  parent: "name-setting"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 300.0
+    y: 105.0
+  }
+  size {
+    x: 560.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "Name\n"
+  ""
+  font: "ui"
+  id: "setting-desc"
+  pivot: PIVOT_S
+  parent: "name-setting"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 320.0
+    y: 568.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "More to be added!"
+  font: "ui"
+  id: "ted"
+  inherit_alpha: true
+}
+layers {
+  name: "background"
+}
+layers {
+  name: "border"
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

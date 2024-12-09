@@ -1,0 +1,79 @@
+local GGG = require "scripts.global"
+local S_Name = nil
+local editing = nil
+function init(self)
+	-- Add initialization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+	S_Name = GGG.defsave.get("config", "name")
+	gui.set_text(gui.get_node('setting-text'), S_Name)
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	--gui.set_rotation(vmath.quat_axis_angle(vmath.vector3(0, 0, 0.1), os.clock()), "logo")
+end
+
+function on_message(self, message_id, message, sender)
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+
+local backspace = false
+--DEBUG:SCRIPT: {"screen_dy":0,"text":"d","dx":0,"dy":0,"pressed":false,"screen_y":504,"y":676.63757324219,"value":0,"released":false,"repeated":false,"x":208.9320526123,"screen_x":134,"screen_dx":0}	hash: [text]
+function on_input(self, action_id, action)
+	print(json.encode(action), action_id)
+	if GGG.current_screen ~= "#settingsproxy" or S_Name == nil then return end
+	if action_id == hash("touch") and action.pressed then
+		if gui.pick_node(gui.get_node("go-back-button"), action.x, action.y) then
+			--print(button["ref"])
+			GGG.defsave.save_all()
+			msg.post("main:/controller#controller", "show_menu")
+		end
+		if gui.pick_node(gui.get_node('name-setting'), action.x, action.y) then
+			gui.set_text(gui.get_node('setting-text'), S_Name .. "|")
+			editing = "name"
+			gui.show_keyboard(gui.KEYBOARD_TYPE_DEFAULT, false)
+		elseif editing ~= nil then
+			gui.hide_keyboard()
+			gui.set_text(gui.get_node('setting-text'), S_Name)
+			GGG.defsave.set("config", "name", S_Name)
+			editing = nil
+		end
+	elseif action_id == hash("text") then
+		if editing == "name" then
+			if string.len(S_Name) >= 15 then return end
+			S_Name = S_Name .. action.text
+			gui.set_text(gui.get_node('setting-text'), S_Name .. "|")
+		end
+	elseif action_id == hash("backspace") then
+		if backspace and action.released then
+			backspace = false
+			return
+		end
+		if backspace == true then return end
+		if editing == "name" then
+			backspace = true
+			S_Name = S_Name:sub(1, -2)
+			gui.set_text(gui.get_node('setting-text'), S_Name .. "|")
+		end
+	elseif action_id == hash("enter") then
+		if editing == "name" then
+			gui.hide_keyboard()
+			gui.set_text(gui.get_node('setting-text'), S_Name)
+			editing = nil
+		end
+	end
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

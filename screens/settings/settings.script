@@ -1,12 +1,12 @@
 local GGG = require "scripts.global"
 function init(self)
-	if GGG.current_screen ~= "#menuproxy" then return end
+	if GGG.current_screen ~= "#settingsproxy" then return end
 	msg.post(".", "acquire_input_focus")
 end
 
---function update(self, dt)
-	--go.set_rotation(vmath.quat_axis_angle(vmath.vector3(0, 0, 0.1), os.clock()), "logo")
---end
+function update(self, dt)
+	-- go.set_rotation(vmath.quat_axis_angle(vmath.vector3(0, 0, 0.1), os.clock()), "logo")
+end
 
 function on_input(self, action_id, action)
 	--print(json.encode(action))
