@@ -1,11 +1,6 @@
 local _board = require "scripts.board"
 local general = require "scripts.general"
 local GGG = require "scripts.global"
--- TODO: Sunstrike
---       Tiles HP
---       Tiles resetting (separate mode?)
---       Mine avoidance thingy
---       Separate mines that stun the player
 
 local BOARD_SIZE = 12
 local MINE_COUNT = 20 -- ~14%
